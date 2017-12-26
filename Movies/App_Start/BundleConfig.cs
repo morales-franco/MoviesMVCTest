@@ -23,8 +23,9 @@ namespace Movies
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            //Agregamos referencia a custom template: https://bootswatch.com/3/cosmo/
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-template.css",
                       "~/Content/site.css"));
         }
     }
