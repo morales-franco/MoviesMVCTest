@@ -4,12 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace Movies.Controllers
 {
     public class MoviesController : Controller
     {
-        // GET: Movies
+        private ApplicationDbContext _context;
+
+        public MoviesController()
+        {
+            this._context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            this._context.Dispose();
+            base.Dispose(disposing);
+        }
+
         public ActionResult Index()
         {
             var model = this.GetMovies();
@@ -40,11 +53,7 @@ namespace Movies.Controllers
 
         private List<Movie> GetMovies()
         {
-            return new List<Movie>{
-                new Movie() { MovieID = 1, Name = "Movie 1"},
-                new Movie() { MovieID = 2, Name = "Movie 2" },
-                new Movie() { MovieID = 3, Name = "Movie 3" }
-            };
+            return this._context.Movies.Include(c => c.Genre).ToList();
         }
 
     }

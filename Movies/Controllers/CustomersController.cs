@@ -5,11 +5,25 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace Movies.Controllers
 {
     public class CustomersController : Controller
     {
+        private ApplicationDbContext _context;
+
+        public CustomersController()
+        {
+            this._context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            this._context.Dispose();
+            base.Dispose(disposing);
+        }
+
         // GET: Customers
         public ViewResult Index()
         {
@@ -26,11 +40,7 @@ namespace Movies.Controllers
 
         private List<Customer> GetCustomers()
         {
-            return new List<Customer>{
-                new Customer() { CustomerID = 1, Name="Customer 1"},
-                new Customer() { CustomerID = 2, Name = "Customer 2" },
-                new Customer() { CustomerID = 3, Name = "Customer 3" }
-            };
+            return this._context.Customers.Include(c => c.MembershipType).ToList();
         }
     }
 }

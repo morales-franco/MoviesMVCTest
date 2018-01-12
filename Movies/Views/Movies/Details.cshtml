@@ -7,15 +7,36 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Movie</h4>
+    <h4>@Model.Name</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            Genre
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+             @Model.Genre.Name
+        </dd>
+        <dt>
+            Release Date
+        </dt>
+
+        <dd>
+            @Model.ReleaseDate.ToShortDateString()
+        </dd>
+        <dt>
+            Date Added
+        </dt>
+
+        <dd>
+            @Model.DateAdded.ToShortDateString()
+        </dd>
+        <dt>
+            Number in Stock
+        </dt>
+
+        <dd>
+            @Model.NumberInStock
         </dd>
 
     </dl>
