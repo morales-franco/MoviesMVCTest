@@ -87,3 +87,70 @@ public override void Up()
 Agregamos los insert que deseamos y luego:
 
 PM> update-database
+
+------------------------------------
+DataBinding
+
+//ViewModel
+public class CustomerCreateVM
+{
+    public IEnumerable<MembershipType> MembershipTypes{ get; set; }
+    public Customer Customer { get; set; }
+}
+
+//Action for Create Post
+
+[HttpPost]
+public ActionResult Create(Customer customer)
+{
+    _context.Customers.Add(customer);
+    _context.SaveChanges();
+    return RedirectToAction("Index");
+}
+
+/*
+Por más que el VM de la vista Create sea del tipo CustomerCreateVM en el metodo Create POST
+si le pongo que va a recibir un customer lo bindea porq:
+name="Customer.Name"
+
+entonces va a intentar bindear el name con la property customer, si nosotros especificamos que el nombre del parametro es customer
+mapea los valores correctamente.
+
+si yo tuviera: public ActionResult Create(Customer customer2) NO matchearia el prefijo del name entonces esto recibiria null ya que espera
+un customer.name y no un customer2.name
+
+*/ 
+
+-------------------------------
+//Proceso recomendado para la edición 
+
+[HttpPost]
+public ActionResult Edit(Customer customer)
+{
+    var customerDB = _context.Customers.FirstOrDefault(c => c.CustomerID == customer.CustomerID);
+
+    //First Approach --> NO RECOMENDADO
+    //Enfoque recomendado por Tutoriales Oficiales de Microsoft
+    //Muchos issues
+    //Actualiza todos los datos siempre (por ahi hay campos que no queres actualizar)
+    //TryUpdateModel(customerDB);
+
+    //Second Approach --> NO RECOMENDADO por magic strings
+    //Mapeamos con automapper solo las properties a actualizar entre customerDB y customer recibido de la vista
+    //Solo actualizar los campos que necesitas
+    //TryUpdateModel(customerDB, "", new string[] { "Name", "BirthDate" });
+
+    //Third Approach--> Enfoque Recomendado
+    //Mapeamos con automapper solo las properties a actualizar entre customerDB y customer recibido de la vista
+    //Mapper.Map(customer, customerInDb)
+    //SaveChanges()
+
+    customerDB.Name = customer.Name;
+    customerDB.BirthDate = customer.BirthDate;
+    customerDB.MembershipTypeID = customer.MembershipTypeID;
+    customerDB.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+
+    _context.SaveChanges();
+
+    return RedirectToAction("Index");
+}

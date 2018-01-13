@@ -13,14 +13,18 @@ namespace Movies.Models
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
+
         public bool IsSubscribedToNewsletter { get; set; }
 
         //Agrego navigation property
         public MembershipType MembershipType { get; set; }
 
+        [Display(Name = "Membership Type")]
         //Especifico FK - EF automaticamente reconoce que es la FK Relación
+
         public byte MembershipTypeID { get; set; }
 
+        [Display(Name = "Date of Birth")]
         public DateTime? BirthDate { get; set; }
 
         /*
