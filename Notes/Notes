@@ -154,3 +154,61 @@ public ActionResult Edit(Customer customer)
 
     return RedirectToAction("Index");
 }
+-----------------------------
+//Anti-forgery Tokens
+/*
+El framework coloca un token hidden en el formulario utilizando un
+@Html.AntiForgeryToken()
+
+y luego valida que ese token no haya sido modificado en el backend
+utilizando el filtro
+[ValidateAntiForgeryToken]
+*/
+
+/*
+Ejemplo
+<input name="__RequestVerificationToken" type="hidden" value="UPIyPTCcuwFnp3CnY5nniGk1x8MjcfLhlEFWUZiORFZVIU0Y6qJacWs9S-hT1TVK1dnuH2AdRwFw4KF0Xym-xG9M2eRxgDaLu6aKe7SYEI01">
+
+Modifico el token anterior colocado por el framework y hago el submit
+
+Exception!
+The anti-forgery token could not be decrypted. If this application is hosted by a Web Farm or cluster, ensure that all machines are running the same version of ASP.NET Web Pages and that the <machineKey> configuration specifies explicit encryption and validation keys. AutoGenerate cannot be used in a cluster.
+*/
+
+
+-------------------------------
+Custom Data annotations
+
+//In the model
+[IsThanZero]
+public int NumberInStock { get; set; }
+
+//In the backend
+public class IsThanZero : ValidationAttribute
+{
+
+    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    {
+        var movie = (MovieCrudVM)validationContext.ObjectInstance;
+
+        if (movie.NumberInStock > 0)
+            return ValidationResult.Success;
+
+        return new ValidationResult("The number in stock must be than zero");
+
+    }
+
+}
+
+//The custom data annotations will not be checking in client side (only standard validations are include in jqueryval [required, email, etc]).
+//The custom data annotations will be check in server side when the form is post
+
+
+-----------------------
+//Client side Validation
+//This feature use jquery validate
+
+//In the form we add this reference: 
+@section scripts{ 
+    @Scripts.Render("~/bundles/jqueryval");
+}
