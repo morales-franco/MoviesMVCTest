@@ -212,3 +212,108 @@ public class IsThanZero : ValidationAttribute
 @section scripts{ 
     @Scripts.Render("~/bundles/jqueryval");
 }
+
+-----------------------
+//WEB API
+
+/*
+ASP.NET MVC
+
+CLIENT ---> REQUEST ----> SERVER
+	   <---  HTML <-----
+
+ASP.NET WEB API
+
+CLIENT ---> REQUEST ----> SERVER
+	   <---  DATA <-----
+
+
+Benefits:
+* Menos recursos en el servidor (mejora escalabilidad - no tenemos html)
+* Menos ancho de banda --> solo devolvemos data --> mejoramos performance
+* Soporte multiple tipos de cliente --> Le puede pegar una tablet, smartphone, pc, etc
+
+*/
+
+/*
+Convention API REST
+
+API: /api/customers
+
+GET    /api/customers
+GET    /api/customers/1
+POST   /api/customers
+PUT    /api/customers/1
+DELETE /api/customers/1
+
+
+*/
+
+
+//Construcción WEB API
+//API REST PURA
+public static void Register(HttpConfiguration config)
+{
+    config.MapHttpAttributeRoutes();
+
+    config.Routes.MapHttpRoute(
+        name: "DefaultApi",
+        routeTemplate: "api/{controller}/{id}",
+        defaults: new { id = RouteParameter.Optional }
+    );
+}
+
+/*
+Cuando enviamos un request al API:
+1) Para encontrar el Controller WEB API agrega "Controller" al valor de la variable {controller}
+2) Se evalua el HTTP METHODS (GET, POST, PUT, DELETE) y se busca un action cuyo nombre comience con el 
+HTTP METHOD NAME.
+
+For example:
+GET Request --> WEB API looks for an action that starts with "GET" such as: "GetContact" or "GetAllContacts"
+
+Esto es una convention
+En el caso de no cumplir con la convención tenemos que especificar el [HTTP METHOD] en el metodo.
+
+// GET api/customers
+public IEnumerable<Customer> GetCustomers()
+
+// GET api/customers/1
+public Customer GetCustomer(int id)
+
+//POST api/customers
+[HttpPost]
+public Customer CreateCustomer(Customer customer)      
+
+--> En este caso tuvimos que especificar [HttpPost] porque el nombre de la acción es CreateCustomer y NO cumple
+con la convención, deberia ser PostCustomer en ese caso no es necesario el filtro.
+
+
+3) Luego se evalua el parameter {id}
+
+**** En el caso que nuestra API no sea rest pura entonces deberiamos modificar el Route para que evalue el nombre de la acción 
+además del verbo http
+*/
+
+
+
+
+/*
+POST http://localhost:52616/api/customers
+
+POSTMAN:
+HEADER:
+Content-Type : application/json
+
+BODY:
+RAW:
+{
+        "Name": "Franco6",
+        "IsSubscribedToNewsletter": false,
+        "MembershipType": null,
+        "MembershipTypeID": 4,
+        "BirthDate": "1992-06-04T00:00:00"
+}
+
+*/
+
