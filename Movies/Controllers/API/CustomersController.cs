@@ -1,4 +1,6 @@
-﻿using Movies.Models;
+﻿using AutoMapper;
+using Movies.Dtos;
+using Movies.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,40 +27,46 @@ namespace Movies.Controllers.API
 
 
         // GET api/customers
-        public IEnumerable<Customer> GetCustomers()
+        public IHttpActionResult GetCustomers()
         {
-            return _context.Customers.ToList();
+            return Ok(_context.Customers.ToList()
+                                     .Select(Mapper.Map<Customer, CustomerDto>));
         }
 
         // GET api/customers/1
-        public Customer GetCustomer(int id)
+        public IHttpActionResult GetCustomer(int id)
         {
             Customer customer = _context.Customers.FirstOrDefault(x => x.CustomerID == id);
 
             if (customer == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            return customer;
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
 
         }
 
         //POST api/customers
         [HttpPost]
-        public Customer CreateCustomer(Customer customer)
+        public IHttpActionResult CreateCustomer(CustomerDto customer)
         {
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
 
-            _context.Customers.Add(customer);
+            var entity = Mapper.Map<CustomerDto, Customer> (customer);
+
+            _context.Customers.Add(entity);
             _context.SaveChanges();
 
-            return customer;
+            customer.CustomerID = entity.CustomerID;
+
+            //Convencion REST retorna en el header la nueva ubicación del recurso
+            return Created(new Uri(Request.RequestUri + "/" + customer.CustomerID), customer);
 
         }
 
         //PUT api/customers/1
         [HttpPut]
-        public void UpdateCustomer(int id, Customer customer)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto customer)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -66,29 +74,29 @@ namespace Movies.Controllers.API
             Customer entity = _context.Customers.FirstOrDefault(x => x.CustomerID == id);
 
             if (entity == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            entity.Name = customer.Name;
-            entity.BirthDate = customer.BirthDate;
-            entity.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            entity.MembershipTypeID = customer.MembershipTypeID;
-
+            Mapper.Map(customer, entity);
 
             _context.SaveChanges();
+
+            return Ok();
 
         }
 
         //DELETE api/customers/1
         [HttpDelete]
-        public void DeleteCustomer(int id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
             Customer entity = _context.Customers.FirstOrDefault(x => x.CustomerID == id);
 
             if (entity == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             _context.Customers.Remove(entity);
             _context.SaveChanges();
+
+            return Ok();
         }
 
 
