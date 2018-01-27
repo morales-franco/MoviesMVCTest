@@ -15,8 +15,6 @@ namespace Movies.App_Start
         {
             Mapper.CreateMap<Customer, CustomerDto>()
                 .ForMember(m => m.CustomerID, opt => opt.Ignore());
-
-
         }
 
 

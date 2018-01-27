@@ -317,3 +317,84 @@ RAW:
 
 */
 
+-----------------------
+//Automapper
+/*
+Generamos una clase que herede de Profile (Automapper) 
+Incializamos todos nuestros mapper ahí
+*/
+
+namespace Movies.App_Start
+{
+    public class MappingProfile: Profile
+    {
+
+        public MappingProfile()
+        {
+            Mapper.CreateMap<Customer, CustomerDto>()
+                .ForMember(m => m.CustomerID, opt => opt.Ignore());
+        }
+    }
+}
+
+/*
+global.asax --> Application_Start()
+Hacemos global a nuestro MappingProfile
+*/
+protected void Application_Start()
+{
+    Mapper.Initialize(c => c.AddProfile<MappingProfile>());
+    //...
+
+/*
+Mappeando desde el código
+Como el mapper ya esta inicializado a nuvel de aplicación no tenemos necesidad de crearlo o inicializarlo
+simplemente lo utilizamos
+*/
+Mapper.Map<Customer, CustomerDto>(customer)
+
+
+
+-----------------------
+//Podemos usar JQUERY para programar el front-end
+
+//Para bootstrap Dialogs - http://bootboxjs.com/
+PM> install-package bootbox -version:4.3.0
+
+/*
+De esta forma podemos reemplazar los confirm de javascript puro con estos que usan bootstrap.
+Pero a diferencia del confirm original esta forma maneja callbacks
+*/
+
+//Agregamos al bundles de bootstrap
+ bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                      "~/Scripts/bootstrap.js",
+                       "~/Scripts/bootbox.js",
+                      "~/Scripts/respond.js"));
+
+ //No ponemos la versión min ya que el bundle lo hara automaticamente 
+ //cuando la app se compile en release
+
+
+-----------------------
+/*Optimizando Jquery 
+
+De esta forma se generan listeners para todos los .js-delete consumiendo mucha memoria*/
+
+<script>
+        $(document).ready(function () {
+            $("#customers .js-delete").on("click", function () {
+
+/*
+De esta forma solo generamos un solo listener y luego filtramos, lo que hace más optimo el
+uso de memoria
+*/
+
+ $(document).ready(function () {
+            $("#customers").on("click", ".js-delete", function () {
+
+
+-----------------------
+//Data Tables --> Usamos plugin:
+//PM> install-package jquery.datatables -version:1.10.11 
+//Permite sorting, pagination, order, etc

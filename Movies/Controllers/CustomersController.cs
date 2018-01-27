@@ -28,8 +28,11 @@ namespace Movies.Controllers
         // GET: Customers
         public ViewResult Index()
         {
-            var model = this.GetCustomers();
-            return View(model);
+            //Se llena via api ahora
+            //var model = this.GetCustomers();
+            //return View(model);
+
+            return View();
         }
 
         public ViewResult Create()
