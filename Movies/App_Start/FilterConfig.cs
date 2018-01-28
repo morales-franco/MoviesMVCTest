@@ -8,6 +8,8 @@ namespace Movies
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            //Add Authorize
+            filters.Add(new AuthorizeAttribute());
         }
     }
 }

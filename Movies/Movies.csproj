@@ -211,6 +211,7 @@
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="CustomDataAnnotations\IsThanZero.cs" />
     <Compile Include="Dtos\CustomerDto.cs" />
+    <Compile Include="Dtos\MembershipTypeDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -257,6 +258,10 @@
     <Compile Include="Migrations\201801120010200_addPopulateGenre.cs" />
     <Compile Include="Migrations\201801120010200_addPopulateGenre.Designer.cs">
       <DependentUpon>201801120010200_addPopulateGenre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801281811498_seedUsers.cs" />
+    <Compile Include="Migrations\201801281811498_seedUsers.Designer.cs">
+      <DependentUpon>201801281811498_seedUsers.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -564,6 +569,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801120010200_addPopulateGenre.resx">
       <DependentUpon>201801120010200_addPopulateGenre.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801281811498_seedUsers.resx">
+      <DependentUpon>201801281811498_seedUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

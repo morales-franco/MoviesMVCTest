@@ -20,5 +20,7 @@ namespace Movies.Dtos
 
         public DateTime? BirthDate { get; set; }
 
+        public MembershipTypeDto MembershipType { get; set; }
+
     }
 }

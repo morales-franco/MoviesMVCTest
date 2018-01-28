@@ -13,8 +13,18 @@ namespace Movies.App_Start
 
         public MappingProfile()
         {
-            Mapper.CreateMap<Customer, CustomerDto>()
+            //Domain to Dto
+            Mapper.CreateMap<Customer, CustomerDto>();
+            Mapper.CreateMap<MembershipType, MembershipTypeDto >();
+
+
+            //Dto to Domain
+            Mapper.CreateMap<CustomerDto, Customer>()
                 .ForMember(m => m.CustomerID, opt => opt.Ignore());
+
+            Mapper.CreateMap<MembershipTypeDto, MembershipType>()
+                .ForMember(m => m.MembershipTypeID, opt => opt.Ignore());
+
         }
 
 

@@ -318,6 +318,22 @@ RAW:
 */
 
 -----------------------
+//Formatters
+public static class WebApiConfig
+{
+    public static void Register(HttpConfiguration config)
+    {
+        var settings = config.Formatters.JsonFormatter.SerializerSettings;
+        settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        settings.Formatting = Formatting.Indented;
+
+
+-----------------------
+//REST
+//Es una buena practica que un web api retorne siempre IHttpActionResult
+//BadRequest() - Created() - Ok() - 	NotFound()
+
+-----------------------
 //Automapper
 /*
 Generamos una clase que herede de Profile (Automapper) 
@@ -398,3 +414,74 @@ uso de memoria
 //Data Tables --> Usamos plugin:
 //PM> install-package jquery.datatables -version:1.10.11 
 //Permite sorting, pagination, order, etc
+//https://datatables.net/
+
+-----------------------
+Authorization && Authentication
+
+//Utilizamos el Filtro en los controller o ActionMethods que queremos validar
+//[Authorize]
+
+/*Una buena practica es colocarlo a nivel GLOBAL de la app --> GLOBAL FILTER para que valide todos los requests*/
+
+public class FilterConfig
+{
+    public static void RegisterGlobalFilters(GlobalFilterCollection filters)
+    {
+        filters.Add(new HandleErrorAttribute());
+        //Add Authorize
+        filters.Add(new AuthorizeAttribute());
+    }
+}
+
+//Luego si queremos que NO se valide la Authorization tenemos que especificar que se permite anonimos
+
+[AllowAnonymous]
+public class HomeController : Controller
+{
+
+-----------------------
+/*
+Generamos user
+admin@test.com
+Test_123
+*/
+
+1) public async Task<ActionResult> Register(RegisterViewModel model)
+2) Genera user  var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+3) Agregamos rol y asignamos rol al user admin
+
+var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+var roleManager = new RoleManager<IdentityRole>(roleStore);
+await roleManager.CreateAsync(new IdentityRole("CanManagerMovies"));
+await UserManager.AddToRoleAsync(user.Id, "CanManagerMovies");
+
+Esto lo hacemos en forma temporal para que el framwork haga el insert en la BD luego copiaremos los scripts
+haremos una migration para que al momento del startup de la app genere user admin y rol
+
+PM> add-migration seedUsers
+
+namespace Movies.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+
+    public partial class seedUsers : DbMigration
+    {
+        public override void Up()
+        {
+            Sql(@"
+                INSERT INTO [dbo].[AspNetUsers] ([Id], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [UserName]) VALUES (N'3c5c5f53-df22-44c2-ab16-460d65eb3fce', N'admin@test.com', 0, N'AOdJloYvN1snvf5LKXMzJ6QT+xOaZacyWio+7ks02BRFDQJqeX5gIZRkJN/ZiOBWUQ==', N'7afafc50-b35a-4cd6-bb3c-eadc00ac5620', NULL, 0, 0, NULL, 1, 0, N'admin@test.com')
+                INSERT INTO [dbo].[AspNetRoles] ([Id], [Name]) VALUES (N'7a651115-d1bf-4756-81ac-4fbc60cd6b75', N'CanManagerMovies')
+                INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'3c5c5f53-df22-44c2-ab16-460d65eb3fce', N'7a651115-d1bf-4756-81ac-4fbc60cd6b75')");
+        }
+
+        public override void Down()
+        {
+        }
+    }
+}
+
+PM> update-database
+
+
