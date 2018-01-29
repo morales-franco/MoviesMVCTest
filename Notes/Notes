@@ -421,6 +421,7 @@ Authorization && Authentication
 
 //Utilizamos el Filtro en los controller o ActionMethods que queremos validar
 //[Authorize]
+//Si NO se especifican Roles Especificos, esto solo validara que la persona que acceda este Autenticada
 
 /*Una buena practica es colocarlo a nivel GLOBAL de la app --> GLOBAL FILTER para que valide todos los requests*/
 
@@ -485,3 +486,60 @@ namespace Movies.Migrations
 PM> update-database
 
 
+-----------------------
+//Agregamos Authorization 
+//Generamos clase que tiene los Roles de la App
+
+namespace Movies.Membership
+{
+    public static class RoleManager
+    {
+        public const string CanManageCustomer = "CanManageCustomer";
+
+    }
+}
+
+//En el controller todas las request que lleguen deben provenir de un usuario logueado (autenticado) y authorizado (debe poseer el role CanManageCustomer)
+//De lo contrario se redirige al login
+namespace Movies.Controllers
+{
+    [Authorize(Roles = RoleManager.CanManageCustomer)]
+    public class CustomersController : Controller
+    {
+
+ -----------------------
+ /*
+ OAuth 
+ Social Logins
+ * Necesitamos HTTPS  --> enable SSL
+ * Register app --> for example in facebook
+ */
+
+ -----------------------
+ //OPTIMIZATION
+ //Tool para trace de request
+//Medición de tiempos
+
+ PM> install-package glimpse.mvc5
+ PM> Install-Package Glimpse.EF5
+
+ //Podemos acceder al dashboard --> Solo accesible en localhost pero se  puede configurar para prod
+
+ http://localhost:52616/glimpse.axd
+//Turn Glimpse en ON
+//Sniffeara cada request
+
+
+//Cache
+//Output Cache a nivel Action Method --> Cache de Vistas
+//MemoryCache --> Cache de Datos
+MemoryCache.Default.Add(	
+  new	
+  CacheItem(“Key”,	
+  value), cacheItemPolicy);
+  	
+  	
+  	
+  	
+  	
+  	

@@ -7,9 +7,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using Movies.ViewModels;
+using Movies.Membership;
 
 namespace Movies.Controllers
 {
+    [Authorize(Roles = RoleManager.CanManageCustomer)]
     public class CustomersController : Controller
     {
         private ApplicationDbContext _context;
@@ -25,6 +27,7 @@ namespace Movies.Controllers
             base.Dispose(disposing);
         }
 
+        
         // GET: Customers
         public ViewResult Index()
         {
