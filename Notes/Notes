@@ -529,6 +529,52 @@ namespace Movies.Controllers
 //Turn Glimpse en ON
 //Sniffeara cada request
 
+//EF navigation properties VIRTUAL
+ /*
+ Si tenemos propiedades de navegación VIRTUALES esto habilita un lazy loading que NO es performante
+ */
+
+public class Customer
+{
+    public int CustomerID { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Name { get; set; }
+
+    public bool IsSubscribedToNewsletter { get; set; }
+
+    public virtual MembershipType MembershipType { get; set; }
+    //...
+
+/*
+Si en controller hacemos
+this._context.Customers.ToList();
+
+y luego en la vista razor hacemos un foreach y hacemos item.MembershipType.Name 
+
+Esto lo que hace es un:
+select * from Customer
+y por cada customer --> va a la tabla MembershipType --> es decir por cada customer select * from MembershipType
+
+Deberiamo tener en el controller:
+this._context.Customers.Include(c => c.MembershipType).ToList();
+
+y sacar el virtual de esta manera hace un EAGER LOADING y no un LAZY
+
+
+EAGER LOADING    | LAZY LOADING
+				 |
+SELECT *		 |	SELECT *
+FROM 			 |	FROM
+INNER JOIN 		 |	
+INNER JOIN 		 |	SELECT *
+				 |	FROM
+				 |
+				 |	SELECT *
+				 |	FROM
+*/
+
 
 //Cache
 //Output Cache a nivel Action Method --> Cache de Vistas
@@ -538,8 +584,15 @@ MemoryCache.Default.Add(
   CacheItem(“Key”,	
   value), cacheItemPolicy);
   	
+//Bundles & Front-end
+
+//Colocar los scritps al final del body section
+	
+	//...
+    @Scripts.Render("~/bundles/lib")
+    @RenderSection("scripts", required: false)
+</body>  	
   	
-  	
-  	
-  	
-  	
+//Para ver la ejecución de los bundles
+//Verificar que en el webconfig
+ <compilation debug="false" targetFramework="4.6.1" />
